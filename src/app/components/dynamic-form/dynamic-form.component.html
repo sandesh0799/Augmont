@@ -1,0 +1,52 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            Dynamic Form
+        </div>
+        <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+                @for (field of fields; track field) {
+                    <div>
+                        <label [for]="field.id" class="form-label">{{ field.label }}</label>
+                        <ng-container>
+                            @if(shouldDisplayField(field)){
+                                @switch (field?.type) {
+                                    @case ('text') {
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" [id]="field.id" [formControlName]="field.id"
+                                            aria-describedby="field.id">
+                                    </div>
+                                    }
+                                    @case ('select') {
+                                    <select class="form-select" aria-label="Default select example" [formControlName]="field.id">
+                                        <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+                                    </select>
+                                    }
+                                    @case ('number') {
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" [id]="field.id" [formControlName]="field.id"
+                                            aria-describedby="field.id">
+                                    </div>
+                                    }
+                                    @case ('checkbox') {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="false" [id]="field.id"
+                                            [formControlName]="field.id">
+                                    </div>
+                                    }
+                                }
+                            }
+
+                            @if(form.get(field.id)?.invalid && (form.get(field.id)?.touched || form.get(field.id)?.dirty)){
+                                @if(field.id && form.get(field.id)){
+                                <span class="error">{{ field.label }} is required.</span>
+                                }
+                            }
+                        </ng-container>
+                    </div>
+                }
+                <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
